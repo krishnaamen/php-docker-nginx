@@ -13,17 +13,21 @@
     </form>
 
     <?php
+    // Set maximum execution time and file upload size
+    ini_set('max_execution_time', 300); // 300 seconds (5 minutes)
+    ini_set('upload_max_filesize', '10M'); // 10 MB
+
     if(isset($_POST['submit'])) {
         // Check if file is uploaded successfully
         if ($_FILES['file']['error'] == 0) {
             $file = $_FILES['file']['tmp_name'];
             
-            // Read CSV file
+            // Read CSV file with a buffer size limit
             if (($handle = fopen($file, "r")) !== FALSE) {
                 echo "<h2>CSV File Data</h2>";
                 echo "<table border='1'>";
                 // Read each row
-                while (($data = fgetcsv($handle, 60000, ",")) !== FALSE) {
+                while (($data = fgetcsv($handle, 10000, ",")) !== FALSE) { // Increased buffer size
                     echo "<tr>";
                     foreach ($data as $value) {
                         echo "<td>" . htmlspecialchars($value) . "</td>";
